@@ -1,12 +1,14 @@
 /*
  AUTHOR: Adesh Shah
  AdeshShah.com
+ (+91) 942 88 999 25
+ 
  First commit: 17/March/2015
  
 	-> command to run: node ChessServer.js
 	-> server.listen(8080); can be replaced with server.listen(8080, 'ANY_IP_ADDR');
     
-CODING GUIDE:
+ CODING GUIDE:
     variable name -> Abc_Xyz_Opq
     comments      -> multi line (must not use single line comment)
     indentation   -> same level
@@ -28,10 +30,10 @@ server.listen(8080);
 console.log('Server listening at localhost:8080\n\n');
 
 /* database configurations */
-var const HOST        = 'localhost', 
-    const USERNAME    = 'root', 
-    const PASSWORD    = '', 
-    const DATABASE    = 'chess';
+var HOST        = 'localhost', 
+    USERNAME    = 'root', 
+    PASSWORD    = '', 
+    DATABASE    = 'chess';
 
 var db_connection = mysql.createConnection(
                     { 
@@ -79,7 +81,6 @@ io.sockets.on('connection', function (socket)
 			}
 			else
 			{
-				//socket.emit('Res_NameUniqueness', false);
 				io.sockets.connected[socket.id].emit('Res_Name_Uniqueness', 
                 {
                     response        : false, 
@@ -88,7 +89,6 @@ io.sockets.on('connection', function (socket)
                 });
 				console.log("Nickname ["+ nickname +"] REJECTED for SocketID: " + socket.id + "\n");
 			}
-			//db_connection.end();
 			Get_Online_List();
 		});
 				
@@ -197,15 +197,15 @@ function Delete_User(toDlt)
             return;
         }
 		
-        //if(typeof variable !== 'undefined'){
-			if(results[0].partner != "")
-			{
-				io.sockets.connected[results[0].partner].emit('Partner_Disconnected', "");
-				db_connection.query("UPDATE `user` SET `partner`=? WHERE `sid`=?", ["",results[0].partner], function(err, info)
-                {/*callback(info.insertId);*/
-                });
-			}
-		//}
+        /*if(typeof variable !== 'undefined'){*/
+		if(results[0].partner != "")
+		{
+			io.sockets.connected[results[0].partner].emit('Partner_Disconnected', "");
+			db_connection.query("UPDATE `user` SET `partner`=? WHERE `sid`=?", ["",results[0].partner], function(err, info)
+            {/*callback(info.insertId);*/
+            });
+		}
+		/*}*/
 		db_connection.query("DELETE FROM `user` WHERE `sid`=?", [toDlt], function(err2, info) 
         {   /*callback(info.insertId);*/
 			if (err2)
@@ -243,7 +243,7 @@ function Connect_User(host_socket_id, partner_socket_id)
             return;
         }
 		
-		//var temp_host_is_white_army = [true,false][Math.round(Math.random())];
+		/* var temp_host_is_white_army = [true,false][Math.round(Math.random())]; */
 		
 		var temp_partner_nickname,
             temp_partner_socket_id;
