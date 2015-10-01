@@ -1,0 +1,101 @@
+html,
+body{
+    position        : relative;
+	font-family     : Sans-Serif;
+    font-size       : 14px;
+    margin          : 0px;
+	padding         : 0px;
+	cursor          : crosshair;    
+	overflow        : hidden;
+	color           : #000;
+    background		: -webkit-linear-gradient(bottom, #AEAEFF , #fff); 	/* For Safari 5.1 to 6.0 	*/
+    background		: -o-linear-gradient(top, #AEAEFF, #fff);        /* For Opera 11.1 to 12.0 	*/
+    background		: -moz-linear-gradient(top, #AEAEFF, #fff);      /* For Firefox 3.6 to 15 	*/
+    background		: linear-gradient(top, #AEAEFF, #fff);        	/* Standard syntax 			*/
+} 
+a{
+	font-family     : Sans-Serif;
+    cursor          : crosshair;
+	text-decoration : none;
+	color           : lightblue;
+}
+a.selected{
+	color           : #000;
+}
+a:hover{
+	color           : #1b435e;
+}
+hr{
+    background: white;
+    height:0px;
+    border-top:0px;
+    border-left:0px;
+    border-right:0px;
+    border-bottom:1px Dotted grey;
+	margin:0px;
+	padding:0px; 
+}
+
+#Available_Users{	
+    position        : absolute;
+    margin          : 0px;
+    padding         : 0px;
+    width           : 100%;		/* overwrite in Main.js */
+	height			: 500px;	/* overwrite in Main.js */
+	left			: 0px;
+	top				: 0px;
+	z-index			: +5;
+	text-align		: center;
+
+    background		: -webkit-linear-gradient(bottom, #FFCECE , #fff); 	/* For Safari 5.1 to 6.0 	*/
+    background		: -o-linear-gradient(top, #FFCECE, #fff);        /* For Opera 11.1 to 12.0 	*/
+    background		: -moz-linear-gradient(top, #FFCECE, #fff);      /* For Firefox 3.6 to 15 	*/
+    background		: linear-gradient(top, #FFCECE, #fff);        	/* Standard syntax 			*/
+	
+}
+
+#Notification{
+	display			: none;
+    position        : absolute;
+    margin          : 0px;
+    padding         : 0px;
+    width           : 100%;		/* overwrite in Main.js */
+	height			: 500px;	/* overwrite in Main.js */
+	left			: 0px;
+	top				: 0px;
+	z-index			: +10;
+	
+}
+
+
+#main_column{
+	position        : relative;
+    width			: 100%;
+	margin          : 0px;
+    padding         : 0px;
+} 
+
+#main_column #Chess{
+	z-index			: 2;
+    position        : relative;
+    margin          : 0px;
+    padding         : 0px;    
+}
+#main_column #Game_Control{
+    position        : relative;
+    margin          : 0px;
+    padding         : 0px;
+}
+#main_column #My_Turn{
+    position        : relative;
+    margin          : 5px;
+    padding         : 0px;	
+    width           : 100px;
+	height			: 7px;
+}
+
+#Move_History,
+#Piece_Info{
+	display			: none;
+}
+
