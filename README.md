@@ -1,9 +1,12 @@
  AUTHOR			: Adesh Shah
+ 
  URL			: AdeshShah.com
+ 
  CELL			: (+91) 942 88 999 25
  
+ 
  First commit	: 17/Mar/2015	{ base socket functionality 			}
- Second commit	: 01/Oct/2015 	{ object oriented paradigm implemented 	}
+ Second commit	: 01/Oct/2015 	{ object oriented paradigm implemented 		}
  
  To setup app:
  1. Unzip 'chess.zip' 					(only one time setup)
