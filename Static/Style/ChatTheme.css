@@ -1,42 +1,91 @@
-#main_column #Chess #Chess_Board{
+#Chat{
+	position:fixed;
+	z-index			: 1;
+	bottom			: 0px;
+}
+
+#Chat_Archive::-webkit-scrollbar-track{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+#Chat_Archive::-webkit-scrollbar{
+	width: 2px;
+	background-color: #F5F5F5;
+}
+
+#Chat_Archive::-webkit-scrollbar-thumb{
+	background-color: grey;
+}
+
+#Chat #Chat_Archive{
     position        : relative;
     margin          : 0px;
     padding         : 0px;
-    width           : 400px;
-    height          : 400px;
-    border          : 0px Dotted lightgrey;    
-}
-#main_column #Chess #Chess_Board .row{
-    position        : relative;
-    margin          : 0px;
-    padding         : 0px;    
-    width           : 400px;
-    height          : 50px;  
-}
-#main_column #Chess #Chess_Board .row .White_Cell,
-#main_column #Chess #Chess_Board .row .Black_Cell{
-    line-height:    : 50px;
-	text-align		: center;
-	font-size		: 40px;	
-    position        : relative;
-    display         : block;
-    margin          : 0px;
-    padding         : 0px;    
-    width           : 50px;
-    height          : 50px;
-    float           : left;
-}
-#main_column #Chess #Chess_Board .row .White_Cell{
-    background      : #FFFFFF;
-}
-#main_column #Chess #Chess_Board .row .Black_Cell{
-    background      : #f5f5f5;    
-}
-#main_column #Chess #Chess_Board .row .White_Cell:hover,
-#main_column #Chess #Chess_Board .row .Black_Cell:hover{
-    background      : grey;
+	width			: 400px;
+	height			: 110px;
+	background		: transparent;
+	border-bottom	: 0px Dotted Black;
+	overflow-y		: scroll;
 }
 
-#Undo_Chess_Board_Button{
-	display			: none;
+#Chat #Chat_Archive .from_partner{
+    position        : relative;
+    margin-left     : 0px;
+	margin-right    : 0px;
+	margin-top      : 5px;
+	margin-bottom   : 5px;
+    padding         : 5px;
+	width			: 280px;
+	float			: right;
+    background		: -webkit-linear-gradient(right, lightblue , #F5F5F5); 	/* For Safari 5.1 to 6.0 	*/
+    background		: -o-linear-gradient(left, lightblue, #F5F5F5);        /* For Opera 11.1 to 12.0 	*/
+    background		: -moz-linear-gradient(left, lightblue, #F5F5F5);      /* For Firefox 3.6 to 15 	*/
+    background		: linear-gradient(left, lightblue, #F5F5F5);        	/* Standard syntax 			*/		
+	border			: 0px Dotted Black;
+	text-align		: right;
 }
+#Chat #Chat_Archive .from_me{
+    position        : relative;
+    margin-left     : 0px;
+	margin-right    : 0px;
+	margin-top      : 5px;
+	margin-bottom   : 5px;
+    padding		    : 5px;	
+	width			: 280px;
+	float			: left;
+    background		: -webkit-linear-gradient(left, lightgreen , #F5F5F5); 	/* For Safari 5.1 to 6.0 	*/
+    background		: -o-linear-gradient(right, lightgreen, #F5F5F5);        /* For Opera 11.1 to 12.0 	*/
+    background		: -moz-linear-gradient(right, lightgreen, #F5F5F5);      /* For Firefox 3.6 to 15 	*/
+    background		: linear-gradient(right, lightgreen, #F5F5F5);        	/* Standard syntax 			*/	
+	border			: 0px Dotted Black;
+}
+
+#Chat input{
+    position        : relative;
+    box-shadow		: 0 0 0px rgba(0,0,0,1);
+    background		: transparent;
+    line-height		: 35px;
+	float			: left;
+    outline			: none;
+	height			: 25px;
+	line-height		: 25px;	
+    padding			: 0px;
+    margin			: 0px;
+	border			: 0px;
+    display			: block;
+    vertical-align	: baseline;
+}
+#Chat input#Type_Chat{
+	background		: #F5F5F5;
+	padding-left	: 5px;
+	padding-right	: 5px;
+	width			: 320px;	
+	}
+#Chat input#Send_Chat{
+    width			: 70px;	
+	background		: lightgreen;	
+	}
+#Chat input#Send_Chat:hover{
+	background		: lightblue;
+}	
