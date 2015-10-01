@@ -1,0 +1,27 @@
+{
+  "name": "pure-chess",
+  "version": "1.0.0",
+  "description": "browser based 2 player real time chess ",
+  "main": "ChessServer.js",
+  "dependencies": {
+    "express": "^4.12.2",
+    "mysql": "^2.5.5",
+    "socket.io": "^1.3.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Adesh/RTChess"
+  },
+  "keywords": [
+    "chess",
+    "node",
+    "real",
+    "time"
+  ],
+  "author": "Adesh Shah",
+  "license": "ISC"
+}
