@@ -13,6 +13,29 @@
     comments      -> multi line (must not use single line comment)
     indentation   -> same level
 */
+/* 
+    SIGNAL Default (client to server)
+    - connection            [ parameter: connection object                                               ]
+    - disconnect            [ parameter: err object                                                      ]
+
+    SIGNAL List (client to server)
+    - Req_Name_Uniqueness   [ parameter: string,    nickname                                             ]
+    - Req_Connection        [ parameter: array,     { host_nickname, host_socket_id, partner_nickname }  ]
+    - Res_Partnership       [ parameter: array,     { response, host_socket_id, partner_socket_id } ]
+    - Req_Chess_Move        [ parameter: array,     { partner_socket_id, move }          	             ]
+    - Req_Manual_Disconnect [ parameter: array,     { host_socket_id, partner_socket_id }                ]
+	- Req_Chat 				[ parameter: array, 	{ partner_socket_id, chat } 						 ]
+
+    SIGNAL List (server to client)
+    - Res_Name_Uniqueness   [ parameter: array,     { response, nickname, host_socket_id }               ]
+    - Req_Connection_2      [ parameter: array,     { host_nickname, host_socket_id, partner_socket_id } ]
+    - Res_Chess_Move        [ parameter: array,     { move }                                             ]
+    - Res_Online_List       [ parameter: array                                                           ]
+    - Partner_Disconnected  [ parameter: array,     { host_socket_id, partner_socket_id }                ]
+    - Begin_Chess           [ parameter: array,     {partner_nickname,partner_socket_id,i_am_white_army} ]
+	- Res_conn_req_rejected [ parameter: bool,    	true 								   		 		 ]
+	- Res_Chat 				[ parameter: string 	chat 												 ]			
+*/
 
 /* required Node Modules */
 var mysql   = require('mysql');
@@ -23,11 +46,14 @@ var app     = express()
   , server  = require('http').createServer(app)
   , io      = require('socket.io').listen(server);
     
-    app.use(express.static(__dirname + '/Game'));
+    app.use(express.static(__dirname + '/Static'));
 
 /* start server */    
-server.listen(8080);
-console.log('Server listening at localhost:8080\n\n');
+var IP      = "192.168.1.1",
+    PORT    = 8080;
+
+server.listen( PORT /*, IP */);
+console.log('Server listening at '+IP+':'+PORT+'\n\n');
 
 /* database configurations */
 var HOST        = 'localhost', 
@@ -77,7 +103,7 @@ io.sockets.on('connection', function (socket)
                     nickname        :nickname, 
                     host_socket_id  :socket.id
                 });
-				console.log("Nickname ["+ nickname +"] ACCEPTED for SocketID: " + socket.id + "\n");
+				console.log("Nickname: "+ nickname +" ACCEPTED for SocketID: " + socket.id + "\n");
 			}
 			else
 			{
@@ -121,21 +147,29 @@ io.sockets.on('connection', function (socket)
 	/* On receiving partnership request confirmation -> begin the game */
 	socket.on('Res_Partnership', function (data) 
 	{
-		if(data.partnership_accepted == true){
+		if(data.response == true)
+        {
 			console.log("Partnership ACCEPTED: " + data.host_socket_id + " <-> "+ data.partner_socket_id + "\n");
 			Connect_User(data.host_socket_id, data.partner_socket_id);
 		}
-        else
+        else if(data.response == false)
         {
             console.log("Partnership REJECTED: " + data.host_socket_id + " <-> "+ data.partner_socket_id + "\n");
             /* emit to the requester that other person is not interested in playing game with you */
-        }		
+            io.sockets.connected[data.partner_socket_id].emit('Res_conn_req_rejected', true);
+        }	        
 	});
 	
 	/* end to end Chess Move */
 	socket.on('Req_Chess_Move',  function (data) 
 	{
 		io.sockets.connected[data.partner_socket_id].emit('Res_Chess_Move', data.move);
+	});
+	
+	/* end to end chat signaling */
+	socket.on('Req_Chat', function (data) 
+	{
+		io.sockets.connected[data.partner_socket_id].emit( 'Res_Chat', data.chat );			
 	});
 	
 	/* Manual disconnect request from one of the partner */	
@@ -152,7 +186,8 @@ io.sockets.on('connection', function (socket)
     /* Disconnect user in case of -> browser crash, browser close with out manual disconnection */
 	socket.on('disconnect', function()
 	{
-		Delete_User(socket.id);
+		console.log("User disconnected, ID: "+ socket.id);
+        Delete_User(socket.id);
 	});
 });
 
@@ -178,7 +213,7 @@ function Get_Online_List()
 		}
 		
         io.sockets.emit('Res_Online_List', user_online);
-		console.log("Online User List Broadcast. Total:" + results.length + "\n");
+		console.log("Online User List Broadcast.\nTotal:" + results.length + "\n");
 	});
 }
 
@@ -196,29 +231,31 @@ function Delete_User(toDlt)
             console.log('GetData Error2: ' + error.message);
             return;
         }
-		
-        /*if(typeof variable !== 'undefined'){*/
-		if(results[0].partner != "")
-		{
-			io.sockets.connected[results[0].partner].emit('Partner_Disconnected', "");
-			db_connection.query("UPDATE `user` SET `partner`=? WHERE `sid`=?", ["",results[0].partner], function(err, info)
-            {/*callback(info.insertId);*/
-            });
-		}
-		/*}*/
-		db_connection.query("DELETE FROM `user` WHERE `sid`=?", [toDlt], function(err2, info) 
-        {   /*callback(info.insertId);*/
-			if (err2)
+		else
+        {
+            /*if(typeof variable !== 'undefined'){*/
+            if(results[0].partner != "")
             {
-                console.log('GetData Error2: ' + error.message);
-                return;
+                io.sockets.connected[results[0].partner].emit('Partner_Disconnected', "");
+                db_connection.query("UPDATE `user` SET `partner`=? WHERE `sid`=?", ["",results[0].partner], function(err, info)
+                {/*callback(info.insertId);*/
+                });
             }
-			else
-            {   
-                Get_Online_List();
-            }
-		});
-	});
+            /*}*/
+            db_connection.query("DELETE FROM `user` WHERE `sid`=?", [toDlt], function(err2, info) 
+            {   /*callback(info.insertId);*/
+                if (err2)
+                {
+                    console.log('GetData Error2: ' + error.message);
+                    return;
+                }
+                else
+                {   
+                    Get_Online_List();
+                }
+            });
+        }
+    });
 }
 
 /* 
@@ -243,9 +280,8 @@ function Connect_User(host_socket_id, partner_socket_id)
             return;
         }
 		
-		/* var temp_host_is_white_army = [true,false][Math.round(Math.random())]; */
-		
-		var temp_partner_nickname,
+		var random_is_white_army = [true,false][Math.round(Math.random())], 
+			temp_partner_nickname,
             temp_partner_socket_id;
             
 		if(results[0].sid == host_socket_id)
@@ -254,13 +290,13 @@ function Connect_User(host_socket_id, partner_socket_id)
             {
                 partner_nickname    : results[1].name, 
                 partner_socket_id   : results[1].sid, 
-                i_am_white_army     : true
+                i_am_white_army     : random_is_white_army
             });
 			io.sockets.connected[partner_socket_id].emit('Begin_Chess', 
             {
                 partner_nickname    : results[0].name, 
                 partner_socket_id   : results[0].sid, 
-                i_am_white_army     : false
+                i_am_white_army     : !random_is_white_army
             });
 		}
 		else  /* else if(results[0].sid == partner_socket_id) */
@@ -269,13 +305,13 @@ function Connect_User(host_socket_id, partner_socket_id)
             {
                 partner_nickname    : results[0].name, 
                 partner_socket_id   : results[0].sid, 
-                i_am_white_army     : true
+                i_am_white_army     : random_is_white_army
             });
 			io.sockets.connected[partner_socket_id].emit('Begin_Chess', 
             {
                 partner_nickname    : results[1].name, 
                 partner_socket_id   : results[1].sid, 
-                i_am_white_army     : false
+                i_am_white_army     : !random_is_white_army
             });
 		}
 		console.log("Game beginning: " + results[0].name + " <-> " + results[1].name + "\n");
