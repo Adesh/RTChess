@@ -37,6 +37,13 @@
 	- Res_Chat 				[ parameter: string 	chat 												 ]			
 */
 
+/* database configurations */
+/* run command: heroku config:add [variable]=[value] and use it process.env.[variable] */	
+var HOST        = process.env.DB_HOST 			|| 'localhost', 
+    USERNAME    = process.env.DB_USERNAME 		|| 'root', 
+    PASSWORD    = process.env.DB_PASSWORD 		|| '', 
+    DATABASE    = process.env.DATABASE 			|| 'chess';	
+
 /* required Node Modules */
 var mysql   = require('mysql');
 var express = require('express');
@@ -50,16 +57,19 @@ var app     = express()
 
 /* start server */    
 var IP      = "192.168.1.1",
-    PORT    = 8080;
+    PORT    = process.env.PORT || 5000;
 
 server.listen( PORT /*, IP */);
-console.log('Server listening at '+IP+':'+PORT+'\n\n');
-
-/* database configurations */
-var HOST        = 'localhost', 
-    USERNAME    = 'root', 
-    PASSWORD    = '', 
-    DATABASE    = 'chess';
+console.log(
+				'\nServer listening at:\t'+
+				'\nIP:\t\t' 			+ IP 		+
+				'\nPORT:\t\t'			+ PORT 		+
+				'\n\nDATABASE Info:' 	+
+				'\nHOST:\t\t'			+ HOST 		+
+				'\nUSERNAME:\t'			+ USERNAME 	+
+				'\nPASSWORD:\t'			+ PASSWORD 	+
+				'\nDATABASE:\t'			+ DATABASE	+ '\n'
+			);
 
 var db_connection = mysql.createConnection(
                     { 
